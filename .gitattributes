@@ -1,0 +1,25 @@
+# Нормализовать все текстовые файлы в репозитории в LF
+* text=auto
+
+# Явно: исходники — LF
+*.kt    text eol=lf
+*.kts   text eol=lf
+*.java  text eol=lf
+*.xml   text eol=lf
+*.gradle text eol=lf
+*.properties text eol=lf
+*.toml  text eol=lf
+*.md    text eol=lf
+
+# Скрипты wrapper'а — LF обязательно (иначе ./gradlew сломается на Linux/macOS)
+gradlew        text eol=lf
+gradlew.bat    text eol=crlf
+
+# Бинарные файлы — не трогать
+*.jar  binary
+*.jks  binary
+*.keystore binary
+*.png  binary
+*.jpg  binary
+*.webp binary
+*.ttf  binary
