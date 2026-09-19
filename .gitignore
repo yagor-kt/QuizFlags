@@ -1,0 +1,68 @@
+# ---------- Gradle ----------
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+
+# Локальные свойства Gradle (пути к SDK, ключи и т.п.)
+local.properties
+
+# Кэш и логи Gradle
+.gradletaskhistory
+gradle-app.setting
+.gradle-cache/
+
+# ---------- Android ----------
+# Собранные APK/AAB/архивы
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+
+# Локальные нативные библиотеки
+*.so
+
+# Логи
+*.log
+
+# Временные файлы Android Studio
+.cxx/
+captures/
+output.json
+release/
+
+# ---------- IDE (Android Studio / IntelliJ) ----------
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Исключения: иногда полезно оставить эти файлы из .idea
+!.idea/codeStyles/
+!.idea/inspectionProfiles/
+!.idea/fileTemplates/
+!.idea/runConfigurations/
+
+# ---------- Kotlin ----------
+.kotlin/
+
+# ---------- Секреты и ключи (ВАЖНО) ----------
+*.jks
+*.keystore
+keystore.properties
+secrets.properties
+google-services.json
+!debug.keystore
+
+# ---------- OS ----------
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# ---------- Прочее ----------
+.navigation/
+tmp/
+dist/
