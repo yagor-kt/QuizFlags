@@ -1,3 +1,62 @@
 <resources>
     <string name="app_name">QuizFlags</string>
+    <string name="back">Назад</string>
+    <string name="cancel">Отмена</string>
+    <string name="exit">Выйти</string>
+    <string name="delete">Удалить</string>
+
+    <!-- Главный экран -->
+    <string name="main_title">Флаги за минуту</string>
+    <string name="start_game">Начать игру</string>
+    <string name="settings">Настройки</string>
+
+    <!-- Игра -->
+    <string name="game_timer">⏱ %1$02d:%2$02d</string>
+    <string name="game_score">Очки: %1$d</string>
+    <string name="exit_dialog_title">Прогресс не сохранится. Выйти?</string>
+
+    <!-- Результат -->
+    <string name="result_score">Ваш результат: %1$d очков</string>
+    <string name="reason_lives">Закончились жизни</string>
+    <string name="reason_time">Время вышло</string>
+    <string name="play_again">Играть снова</string>
+    <string name="main_menu">В главное меню</string>
+
+    <!-- Настройки -->
+    <string name="settings_title">Настройки</string>
+    <string name="view_flags">Просмотр всех флагов</string>
+    <string name="login_account">Вход в аккаунт</string>
+    <string name="stats">Статистика</string>
+    <string name="leaders">Таблица лидеров</string>
+    <string name="reset_statistics">Сброс статистики</string>
+    <string name="about">Об игре</string>
+    <string name="logout">Выход</string>
+    <string name="reset_dialog_title">Удалить всю статистику?</string>
+    <string name="reset_dialog_message">Действие необратимо.</string>
+
+    <!-- Флаги -->
+    <string name="flags_title">Все флаги</string>
+
+    <!-- Вход -->
+    <string name="login_title">Вход</string>
+    <string name="login">Логин</string>
+    <string name="password">Пароль</string>
+    <string name="login_button">Войти</string>
+    <string name="login_as_guest">Войти как гость</string>
+
+    <!-- Статистика -->
+    <string name="stats_title">Статистика</string>
+    <string name="stats_score">Очки: %1$d</string>
+    <string name="stats_empty">Вы ещё не играли</string>
+
+    <!-- Лидеры -->
+    <string name="leaders_title">Таблица лидеров</string>
+    <string name="leaders_row">%1$d. %2$s — %3$d очков</string>
+    <string name="leaders_empty">Пока никто не играл</string>
+
+    <!-- Об игре -->
+    <string name="about_title">Об игре</string>
+    <string name="version">Версия: %1$s</string>
+    <string name="author">Курсовой проект</string>
+    <string name="about_description">Угадывайте флаги стран за одну минуту. Отвечайте на вопросы о флагах, зарабатывайте очки и соревнуйтесь в таблице лидеров. У вас три жизни — каждая ошибка отнимает одну. Успейте набрать максимум очков до истечения времени!</string>
 </resources>

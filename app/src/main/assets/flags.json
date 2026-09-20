@@ -122,6 +122,5 @@
   {"id":121,"name":"Гватемала","imageName":"gt"},
   {"id":122,"name":"Гондурас","imageName":"hn"},
   {"id":123,"name":"Никарагуа","imageName":"ni"},
-  {"id":124,"name":"Сальвадор","imageName":"sv"},
-  {"id":125,"name":"Доминиканская Республика","imageName":"do"}
+  {"id":124,"name":"Сальвадор","imageName":"sv"}
 ]
