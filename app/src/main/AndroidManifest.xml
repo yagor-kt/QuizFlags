@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.QuizFlags">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.main.MainActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="true"
             android:screenOrientation="portrait">

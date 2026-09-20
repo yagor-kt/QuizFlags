@@ -1,61 +1,51 @@
 package com.example.quizflags.navigation
-/*
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.quizflags.ui.about.AboutScreen
-import com.example.quizflags.ui.flags.FlagsScreen
-import com.example.quizflags.ui.flags.FlagsViewModel
-import com.example.quizflags.ui.game.GameEvent
+import com.example.quizflags.ui.flags.FlagsListScreen
 import com.example.quizflags.ui.game.GameScreen
-import com.example.quizflags.ui.game.GameViewModel
 import com.example.quizflags.ui.leaders.LeadersScreen
-import com.example.quizflags.ui.leaders.LeadersViewModel
-import com.example.quizflags.ui.login.LoginEvent
 import com.example.quizflags.ui.login.LoginScreen
-import com.example.quizflags.ui.login.LoginViewModel
 import com.example.quizflags.ui.main.MainScreen
 import com.example.quizflags.ui.result.ResultScreen
-import com.example.quizflags.ui.result.ResultViewModel
 import com.example.quizflags.ui.settings.SettingsScreen
-import com.example.quizflags.ui.settings.SettingsViewModel
 import com.example.quizflags.ui.stats.StatsScreen
+import com.example.quizflags.ui.flags.FlagsViewModel
+import com.example.quizflags.ui.game.GameEvent
+import com.example.quizflags.ui.game.GameViewModel
+import com.example.quizflags.ui.leaders.LeadersViewModel
+import com.example.quizflags.ui.login.LoginViewModel
+import com.example.quizflags.ui.settings.SettingsViewModel
 import com.example.quizflags.ui.stats.StatsViewModel
 
+// Граф навигации: связывает маршруты Routes с экранами и ViewModel'ами.
 @Composable
-fun NavGraph(navController: NavHostController = rememberNavController()) {
-
+fun NavGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = Routes.Main.route
+        startDestination = Routes.Main.route,
     ) {
-
-        // ─── Главный экран (меню) ─────────────────────────────────────────────
         composable(Routes.Main.route) {
             MainScreen(
-                onNavigate = { route -> navController.navigate(route) }
+                onNavigate = { path -> navController.navigate(path) }
             )
         }
 
-        // ─── Игра ────────────────────────────────────────────────────────────
         composable(Routes.Game.route) {
-            val gameViewModel: GameViewModel = viewModel(factory = GameViewModel.Factory)
+            val vm: GameViewModel = viewModel(factory = GameViewModel.Factory)
 
-            // Слушаем навигационные события из ViewModel
             LaunchedEffect(Unit) {
-                gameViewModel.events.collect { event ->
+                vm.events.collect { event ->
                     when (event) {
                         is GameEvent.NavigateToResult -> {
-                            navController.navigate(
-                                Routes.Result.create(event.score, event.reason)
-                            ) {
-                                // Убираем игру из стека, чтобы нельзя было вернуться назад
+                            navController.navigate(Routes.Result.create(event.score, event.reason)) {
                                 popUpTo(Routes.Game.route) { inclusive = true }
                             }
                         }
@@ -64,63 +54,86 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
                 }
             }
 
-            GameScreen(viewModel = gameViewModel)
+            GameScreen(vm = vm)
         }
 
-        // ─── Результат ───────────────────────────────────────────────────────
+        composable(Routes.Settings.route) {
+            val vm: SettingsViewModel = viewModel(factory = SettingsViewModel.Factory)
+            SettingsScreen(
+                vm = vm,
+                onNavigate = { route -> navController.navigate(route) },
+                onBack = { navController.popBackStack() },
+                onLogout = {
+                    navController.navigate(Routes.Main.route) {
+                        popUpTo(Routes.Main.route) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(Routes.Flags.route) {
+            val vm: FlagsViewModel = viewModel(factory = FlagsViewModel.Factory)
+            FlagsListScreen(
+                vm = vm,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(Routes.Login.route) {
+            val vm: LoginViewModel = viewModel(factory = LoginViewModel.Factory)
+            LoginScreen(
+                vm = vm,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(Routes.Stats.route) {
+            val vm: StatsViewModel = viewModel(factory = StatsViewModel.Factory)
+            StatsScreen(
+                vm = vm,
+                onBack = { navController.popBackStack() },
+            )
+        }
+
+        composable(Routes.Leaders.route) {
+            val vm: LeadersViewModel = viewModel(factory = LeadersViewModel.Factory)
+            LeadersScreen(
+                vm = vm,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(Routes.About.route) {
+            AboutScreen(
+                onBack = { navController.popBackStack() }
+            )
+        }
+
         composable(
             route = Routes.Result.route,
             arguments = listOf(
                 navArgument(Routes.Result.ARG_SCORE) { type = NavType.IntType },
-                navArgument(Routes.Result.ARG_REASON) { type = NavType.StringType }
-            )
-        ) {
-            val resultViewModel: ResultViewModel = viewModel(factory = ResultViewModel.Factory)
-            ResultScreen(viewModel = resultViewModel)
-        }
-
-        // ─── Настройки ───────────────────────────────────────────────────────
-        composable(Routes.Settings.route) {
-            val settingsViewModel: SettingsViewModel = viewModel(factory = SettingsViewModel.Factory)
-            SettingsScreen(viewModel = settingsViewModel)
-        }
-
-        // ─── Каталог флагов ──────────────────────────────────────────────────
-        composable(Routes.Flags.route) {
-            val flagsViewModel: FlagsViewModel = viewModel(factory = FlagsViewModel.Factory)
-            FlagsScreen(viewModel = flagsViewModel)
-        }
-
-        // ─── Вход ────────────────────────────────────────────────────────────
-        composable(Routes.Login.route) {
-            val loginViewModel: LoginViewModel = viewModel(factory = LoginViewModel.Factory)
-
-            LaunchedEffect(Unit) {
-                loginViewModel.events.collect { event ->
-                    when (event) {
-                        LoginEvent.NavigateBack -> navController.popBackStack()
+                navArgument(Routes.Result.ARG_REASON) { type = NavType.StringType },
+            ),
+        ) { backStackEntry ->
+            val score = backStackEntry.arguments?.getInt(Routes.Result.ARG_SCORE) ?: 0
+            val reason = backStackEntry.arguments?.getString(Routes.Result.ARG_REASON).orEmpty()
+            ResultScreen(
+                score = score,
+                reason = reason,
+                onRestart = {
+                    navController.navigate(Routes.Game.route) {
+                        popUpTo(navController.graph.startDestinationId) { inclusive = false }
+                        launchSingleTop = true
                     }
-                }
-            }
-
-            LoginScreen(viewModel = loginViewModel)
-        }
-
-        // ─── Статистика ──────────────────────────────────────────────────────
-        composable(Routes.Stats.route) {
-            val statsViewModel: StatsViewModel = viewModel(factory = StatsViewModel.Factory)
-            StatsScreen(viewModel = statsViewModel)
-        }
-
-        // ─── Лидеры ──────────────────────────────────────────────────────────
-        composable(Routes.Leaders.route) {
-            val leadersViewModel: LeadersViewModel = viewModel(factory = LeadersViewModel.Factory)
-            LeadersScreen(viewModel = leadersViewModel)
-        }
-
-        // ─── О программе (статичный) ─────────────────────────────────────────
-        composable(Routes.About.route) {
-            AboutScreen()
+                },
+                onBackToMain = {
+                    navController.navigate(Routes.Main.route) {
+                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                },
+            )
         }
     }
-}*/
+}

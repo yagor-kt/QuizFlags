@@ -1,6 +1,8 @@
 package com.example.quizflags.data.prefs
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -23,6 +25,7 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 class UserPreferences private constructor(private val context: Context) {
 
     companion object {
+        @SuppressLint("StaticFieldLeak")
         @Volatile
         private var INSTANCE: UserPreferences? = null
 
@@ -75,17 +78,19 @@ class UserPreferences private constructor(private val context: Context) {
      * Если guestId пуст — генерируем «гость_» + 3 случайные цифры и сохраняем.
      * Если уже задан — ничего не меняем.
      */
-    suspend fun ensureGuestId() {
+
+    suspend fun ensureGuestId(): String {
+        val guestName = "гость_${(100..999).random()}"
         context.dataStore.edit { prefs ->
-            val existing = prefs[Keys.GUEST_ID]
-            if (existing.isNullOrEmpty()) {
-                val randomDigits = (100..999).random().toString()
-                prefs[Keys.GUEST_ID] = "гость_$randomDigits"
-            }
+            prefs[Keys.GUEST_ID] = guestName
+            prefs[Keys.USER_NAME] = guestName
+            prefs[Keys.IS_LOGGED_IN] = false
         }
+        Log.d("My_UID", guestName)
+        return guestName
     }
 
-    /**
+        /**
      * Выход из аккаунта: очищаем имя и сбрасываем признак авторизации.
      * guest_id при этом НЕ трогаем.
      */

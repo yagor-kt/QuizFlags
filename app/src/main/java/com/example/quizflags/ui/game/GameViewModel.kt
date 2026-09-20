@@ -96,10 +96,10 @@ class GameViewModel(
     /** Определяем имя игрока: из DataStore, если пусто — «гость_XXX». */
     private fun loadPlayerName() {
         viewModelScope.launch {
-            val storedName = userPreferences.userNameFlow.first().orEmpty()
+            val storedName = userPreferences.userNameFlow.first()
             val playerName = if (storedName.isBlank()) {
                 val guestId = userPreferences.ensureGuestId()
-                "гость_$guestId"
+                guestId
             } else {
                 storedName
             }
