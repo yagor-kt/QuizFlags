@@ -4,13 +4,16 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
@@ -27,18 +30,24 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
@@ -106,11 +115,12 @@ private fun GameContent(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
-                .padding(16.dp),
+                .padding(padding),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
+
+            Spacer(Modifier.height(44.dp))
             // Индикатор жизней: три сердечка.
             Row(horizontalArrangement = Arrangement.Center) {
                 repeat(3) { i ->
@@ -132,7 +142,6 @@ private fun GameContent(
             val flag = uiState.currentFlag
             val flagPainter = rememberVectorPainter(Icons.Default.LocationOn)
 
-            Log.d("MyGame", "flag: $flag")
             AsyncImage(
                 model = "file:///android_asset/flags/${flag?.imageName.orEmpty()}.png",
                 contentDescription = flag?.name.orEmpty(),
@@ -140,23 +149,26 @@ private fun GameContent(
                 error = flagPainter,
                 modifier = Modifier
                     .fillMaxWidth(0.9f)
-                    .aspectRatio(1.5f),
+                    .aspectRatio(1.5f)
+                    .clip(RoundedCornerShape(16.dp)),
+                contentScale = ContentScale.Crop
             )
 
-            Spacer(Modifier.height(24.dp))
+//            Spacer(Modifier.height(24.dp))
+            Spacer(modifier = Modifier.weight(1f))
 
             // Варианты ответов в сетке 2 × 2.
             val options = uiState.options
-            Column {
-                Row {
-                    OptionButton(options.getOrNull(0), onAnswer, Modifier.weight(1f))
-                    OptionButton(options.getOrNull(1), onAnswer, Modifier.weight(1f))
-                }
-                Row {
-                    OptionButton(options.getOrNull(2), onAnswer, Modifier.weight(1f))
-                    OptionButton(options.getOrNull(3), onAnswer, Modifier.weight(1f))
-                }
+
+            Row(modifier = Modifier.fillMaxWidth().height(90.dp)) {
+                OptionButton(options.getOrNull(0), onAnswer, Modifier.weight(1f).fillMaxHeight())
+                OptionButton(options.getOrNull(1), onAnswer, Modifier.weight(1f).fillMaxHeight())
             }
+            Row(modifier = Modifier.fillMaxWidth().height(90.dp)) {
+                OptionButton(options.getOrNull(2), onAnswer, Modifier.weight(1f).fillMaxHeight())
+                OptionButton(options.getOrNull(3), onAnswer, Modifier.weight(1f).fillMaxHeight())
+            }
+
         }
     }
 
@@ -179,7 +191,7 @@ private fun GameContent(
     }
 }
 
-@Composable
+/*@Composable
 private fun OptionButton(
     option: String?,
     onAnswer: (String) -> Unit,
@@ -194,8 +206,30 @@ private fun OptionButton(
     ) {
         Text(option)
     }
-}
+}*/
 
+@Composable
+private fun OptionButton(
+    option: String?,
+    onAnswer: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+
+    if (option == null) {
+        Spacer(modifier = modifier)
+        return
+    }
+
+    OutlinedButton (
+        onClick = { onAnswer(option) },
+        modifier = modifier, // Сюда из Row прилетают .weight(1f).fillMaxHeight()
+        shape = RectangleShape, // Делает углы острыми, чтобы кнопки сливались стык в стык
+        contentPadding = PaddingValues(0.dp), // Убираем внутренние ограничения для текста
+        elevation = null // Отключаем тени, чтобы кнопки были плоскими и не перекрывали друг друга
+    ) {
+        Text(option, fontSize = 20.sp)
+    }
+}
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable

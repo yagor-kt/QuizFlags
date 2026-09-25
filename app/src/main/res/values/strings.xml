@@ -56,7 +56,7 @@
 
     <!-- Об игре -->
     <string name="about_title">Об игре</string>
-    <string name="version">Версия: %1$s</string>
+    <string name="version">Версия: 1.0.2</string>
     <string name="author">Курсовой проект</string>
     <string name="about_description">Угадывайте флаги стран за одну минуту. Отвечайте на вопросы о флагах, зарабатывайте очки и соревнуйтесь в таблице лидеров. У вас три жизни — каждая ошибка отнимает одну. Успейте набрать максимум очков до истечения времени!</string>
 </resources>
